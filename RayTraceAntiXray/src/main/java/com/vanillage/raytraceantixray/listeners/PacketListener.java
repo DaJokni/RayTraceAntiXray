@@ -2,6 +2,7 @@ package com.vanillage.raytraceantixray.listeners;
 
 import java.util.HashMap;
 
+import com.comphenix.protocol.wrappers.ChunkCoordIntPair;
 import org.bukkit.Location;
 
 import com.comphenix.protocol.PacketType;
@@ -113,8 +114,8 @@ public final class PacketListener extends PacketAdapter {
             // Note that chunk unload packets aren't sent on world change and on respawn.
             // World changes are already handled above.
             // Technically removing chunks isn't necessary since we're using a weak reference to the chunk.
-            StructureModifier<Integer> integers = event.getPacket().getIntegers();
-            plugin.getPlayerData().get(event.getPlayer().getUniqueId()).getChunks().remove(new LongWrapper(ChunkPos.asLong(integers.read(0), integers.read(1))));
+            StructureModifier<ChunkCoordIntPair> integers = event.getPacket().getChunkCoordIntPairs();
+            plugin.getPlayerData().get(event.getPlayer().getUniqueId()).getChunks().remove(new LongWrapper(ChunkPos.asLong(integers.read(0).getChunkX(), integers.read(0).getChunkZ())));
         } else if (event.getPacketType() == PacketType.Play.Server.RESPAWN) {
             // As with world changes, chunk unload packets aren't sent on respawn.
             // All required chunks are (re)sent afterwards.
